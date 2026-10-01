@@ -1,0 +1,18 @@
+# Backend (Maven / Java)
+backend/target/
+*.class
+
+# Frontend (Angular / Node)
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Environnement et système
+.env
+.DS_Store
+Thumbs.db
