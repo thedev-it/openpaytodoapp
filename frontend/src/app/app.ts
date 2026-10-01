@@ -1,11 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { TaskList } from './components/task-list/task-list';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [TaskList],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
-export class App {
-  protected readonly title = signal('frontend');
-}
+export class App {}

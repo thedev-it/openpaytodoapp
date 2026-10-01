@@ -1,0 +1,76 @@
+<section class="task-list">
+  <form class="filters" [formGroup]="filters">
+    <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
+      <mat-label>Rechercher par titre</mat-label>
+      <input matInput formControlName="search" placeholder="Ex : démo" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Statut</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="">Tous</mat-option>
+        @for (option of statusOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Priorité</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option value="">Toutes</mat-option>
+        @for (option of priorityOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="resetFilters()">Réinitialiser</button>
+  </form>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" class="loader" />
+  }
+
+  @if (errorMessage(); as message) {
+    <div class="state state--error" role="alert">
+      <p>{{ message }}</p>
+      <button mat-flat-button type="button" (click)="reload()">Réessayer</button>
+    </div>
+  } @else if (!loading() && tasks().length === 0) {
+    <div class="state state--empty">
+      <p>Aucune tâche à afficher.</p>
+    </div>
+  } @else if (!loading()) {
+    <p class="count">{{ tasks().length }} tâche{{ tasks().length > 1 ? 's' : '' }}</p>
+
+    <div class="grid">
+      @for (task of tasks(); track task.id; let i = $index) {
+        <article
+          class="task-card"
+          [attr.data-priority]="task.priority"
+          [style.animation-delay.ms]="i * 40"
+        >
+          <div class="task-card__top">
+            <span class="badge" [attr.data-status]="task.status">
+              {{ statusLabel(task.status) }}
+            </span>
+            <span class="priority" [attr.data-priority]="task.priority">
+              <span class="priority__dot"></span>{{ priorityLabel(task.priority) }}
+            </span>
+          </div>
+
+          <h3 class="task-card__title">{{ task.title }}</h3>
+
+          @if (task.description) {
+            <p class="task-card__description">{{ task.description }}</p>
+          }
+
+          <footer class="task-card__footer">
+            <time>{{ task.createdAt | date: 'dd/MM/yyyy' }}</time>
+          </footer>
+        </article>
+      }
+    </div>
+  }
+</section>
