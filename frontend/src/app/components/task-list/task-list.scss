@@ -108,7 +108,9 @@
           &__footer {
               margin-top: auto;
               display: flex;
+              flex-wrap: wrap;
               align-items: center;
+              gap: 4px;
               justify-content: space-between;
               padding-top: 8px;
               border-top: 1px solid var(--border);
@@ -221,4 +223,61 @@
         font-weight: 650;
         letter-spacing: -0.02em;
     }
+}
+
+.badge--button {
+    gap: 6px;
+    border: 0;
+    font-family: inherit;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+
+    &:hover {
+        filter: brightness(1.25);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 2px;
+    }
+}
+
+.badge__caret {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.task-card__link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+        color: #c4bcff;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--primary);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+}
+
+.task-card__actions {
+    display: flex;
+    gap: 4px;
+}
+
+.action {
+    min-width: 0;
+    font-size: 0.8rem;
+}
+
+.action--danger {
+    color: var(--danger);
+    --mat-button-text-label-text-color: var(--danger);
 }

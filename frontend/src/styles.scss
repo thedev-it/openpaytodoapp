@@ -49,3 +49,50 @@ body {
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &[data-status='TODO'] {
+    color: #a5b4fc;
+    background: rgba(129, 140, 248, 0.15);
+  }
+
+  &[data-status='IN_PROGRESS'] {
+    color: #fcd34d;
+    background: rgba(251, 191, 36, 0.15);
+  }
+
+  &[data-status='DONE'] {
+    color: #6ee7b7;
+    background: rgba(52, 211, 153, 0.15);
+  }
+}
+
+.priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  &[data-priority='HIGH'] .priority__dot {
+    background: var(--danger);
+  }
+
+  &[data-priority='MEDIUM'] .priority__dot {
+    background: var(--warning);
+  }
+}

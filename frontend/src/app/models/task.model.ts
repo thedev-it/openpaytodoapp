@@ -41,3 +41,11 @@ export const PRIORITY_OPTIONS: { value: Priority; label: string }[] = [
   { value: 'MEDIUM', label: 'Moyenne' },
   { value: 'HIGH', label: 'Haute' },
 ];
+
+export function getStatusLabel(status: Status): string {
+  return STATUS_OPTIONS.find((option) => option.value === status)?.label ?? status;
+}
+
+export function getPriorityLabel(priority: Priority): string {
+  return PRIORITY_OPTIONS.find((option) => option.value === priority)?.label ?? priority;
+}

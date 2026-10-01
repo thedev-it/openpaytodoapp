@@ -3,6 +3,7 @@
     <h2>Mes tâches</h2>
     <button mat-flat-button type="button" (click)="openCreate()">Nouvelle tâche</button>
   </div>
+
   <form class="filters" [formGroup]="filters">
     <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
       <mat-label>Rechercher par titre</mat-label>
@@ -56,15 +57,40 @@
           [style.animation-delay.ms]="i * 40"
         >
           <div class="task-card__top">
-            <span class="badge" [attr.data-status]="task.status">
+            <button
+              type="button"
+              class="badge badge--button"
+              [attr.data-status]="task.status"
+              [matMenuTriggerFor]="statusMenu"
+              aria-label="Changer le statut"
+            >
               {{ statusLabel(task.status) }}
-            </span>
+              <span class="badge__caret" aria-hidden="true">▾</span>
+            </button>
+
+            <mat-menu #statusMenu="matMenu">
+              @for (option of statusOptions; track option.value) {
+                <button
+                  mat-menu-item
+                  type="button"
+                  [disabled]="option.value === task.status"
+                  (click)="changeStatus(task, option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              }
+            </mat-menu>
+
             <span class="priority" [attr.data-priority]="task.priority">
               <span class="priority__dot"></span>{{ priorityLabel(task.priority) }}
             </span>
           </div>
 
-          <h3 class="task-card__title">{{ task.title }}</h3>
+          <h3 class="task-card__title">
+            <button type="button" class="task-card__link" (click)="openDetail(task)">
+              {{ task.title }}
+            </button>
+          </h3>
 
           @if (task.description) {
             <p class="task-card__description">{{ task.description }}</p>
@@ -72,7 +98,19 @@
 
           <footer class="task-card__footer">
             <time>{{ task.createdAt | date: 'dd/MM/yyyy' }}</time>
-            <button mat-button type="button" (click)="openEdit(task)">Modifier</button>
+            <div class="task-card__actions">
+              <button mat-button type="button" class="action" (click)="openEdit(task)">
+                Modifier
+              </button>
+              <button
+                mat-button
+                type="button"
+                class="action action--danger"
+                (click)="openDelete(task)"
+              >
+                Supprimer
+              </button>
+            </div>
           </footer>
         </article>
       }

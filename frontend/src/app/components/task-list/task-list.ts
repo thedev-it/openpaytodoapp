@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,8 +28,12 @@ import {
   Status,
   Task,
   TaskFilters,
+  getPriorityLabel,
+  getStatusLabel,
 } from '../../models/task.model';
 import { TaskApi } from '../../services/task-api';
+import { ConfirmDialog, ConfirmDialogData } from '../confirm-dialog/confirm-dialog';
+import { TaskDetailDialog } from '../task-detail-dialog/task-detail-dialog';
 import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
 
 @Component({
@@ -39,6 +44,7 @@ import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatMenuModule,
     MatProgressBarModule,
     MatSelectModule,
   ],
@@ -53,6 +59,8 @@ export class TaskList {
 
   readonly statusOptions = STATUS_OPTIONS;
   readonly priorityOptions = PRIORITY_OPTIONS;
+  readonly statusLabel = getStatusLabel;
+  readonly priorityLabel = getPriorityLabel;
 
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal(true);
@@ -105,12 +113,61 @@ export class TaskList {
     this.openForm(task);
   }
 
-  statusLabel(status: Status): string {
-    return this.statusOptions.find((option) => option.value === status)?.label ?? status;
+  openDetail(task: Task): void {
+    this.dialog
+      .open<TaskDetailDialog, number, 'edit'>(TaskDetailDialog, {
+        data: task.id,
+        width: '520px',
+        maxWidth: '95vw',
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result === 'edit') {
+          this.openEdit(task);
+        }
+      });
   }
 
-  priorityLabel(priority: Priority): string {
-    return this.priorityOptions.find((option) => option.value === priority)?.label ?? priority;
+  openDelete(task: Task): void {
+    this.dialog
+      .open<ConfirmDialog, ConfirmDialogData, boolean>(ConfirmDialog, {
+        data: {
+          title: 'Supprimer la tâche',
+          message: `Voulez-vous vraiment supprimer « ${task.title} » ? Cette action est définitive.`,
+          confirmLabel: 'Supprimer',
+        },
+        width: '440px',
+        maxWidth: '95vw',
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+        this.api.delete(task.id).subscribe({
+          next: () => {
+            this.snackBar.open('Tâche supprimée', 'OK', { duration: 3000 });
+            this.reload();
+          },
+          error: (error: HttpErrorResponse) => {
+            this.notifyError(error);
+            this.reload();
+          },
+        });
+      });
+  }
+
+  changeStatus(task: Task, status: Status): void {
+    if (task.status === status) {
+      return;
+    }
+    this.api.updateStatus(task.id, status).subscribe({
+      next: () => {
+        this.snackBar.open(`Statut : ${getStatusLabel(status)}`, 'OK', { duration: 3000 });
+        this.reload();
+      },
+      error: (error: HttpErrorResponse) => this.notifyError(error),
+    });
   }
 
   private openForm(task: Task | null): void {
@@ -127,6 +184,10 @@ export class TaskList {
           this.reload();
         }
       });
+  }
+
+  private notifyError(error: HttpErrorResponse): void {
+    this.snackBar.open(this.toMessage(error), 'OK', { duration: 5000 });
   }
 
   private toMessage(error: HttpErrorResponse): string {
