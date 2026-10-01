@@ -2,26 +2,31 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Status, Task, TaskFilters, TaskRequest } from '../models/task.model';
+import { PageResponse, SortBy, SortDir, Status, Task, TaskFilters, TaskRequest } from '../models/task.model';
+
+export interface ListParams extends TaskFilters {
+  page?: number;
+  size?: number;
+  sortBy?: SortBy;
+  sortDir?: SortDir;
+}
 
 @Injectable({ providedIn: 'root' })
 export class TaskApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
-  list(filters: TaskFilters = {}): Observable<Task[]> {
-    let params = new HttpParams();
-    const search = filters.search?.trim();
-    if (search) {
-      params = params.set('search', search);
-    }
-    if (filters.status) {
-      params = params.set('status', filters.status);
-    }
-    if (filters.priority) {
-      params = params.set('priority', filters.priority);
-    }
-    return this.http.get<Task[]>(this.baseUrl, { params });
+  list(params: ListParams = {}): Observable<PageResponse<Task>> {
+    let httpParams = new HttpParams();
+    const search = params.search?.trim();
+    if (search) httpParams = httpParams.set('search', search);
+    if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.priority) httpParams = httpParams.set('priority', params.priority);
+    httpParams = httpParams.set('page', params.page ?? 0);
+    httpParams = httpParams.set('size', params.size ?? 10);
+    httpParams = httpParams.set('sortBy', params.sortBy ?? 'createdAt');
+    httpParams = httpParams.set('sortDir', params.sortDir ?? 'desc');
+    return this.http.get<PageResponse<Task>>(this.baseUrl, { params: httpParams });
   }
 
   get(id: number): Observable<Task> {

@@ -1,5 +1,7 @@
 export type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
 export type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
+export type SortDir = 'asc' | 'desc';
+export type SortBy = 'createdAt' | 'title' | 'priority' | 'status';
 
 export interface Task {
   id: number;
@@ -21,6 +23,18 @@ export interface TaskFilters {
   search?: string;
   status?: Status | '';
   priority?: Priority | '';
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  first: boolean;
+  last: boolean;
+  sortBy: SortBy;
+  sortDir: SortDir;
 }
 
 export interface ApiError {

@@ -3,10 +3,12 @@ package thedev.it.todo_app.service;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import thedev.it.todo_app.dto.PageResponse;
 import thedev.it.todo_app.dto.TaskRequest;
 import thedev.it.todo_app.dto.TaskResponse;
 import thedev.it.todo_app.entity.Priority;
@@ -25,12 +27,11 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<TaskResponse> search(Status status, Priority priority, String search) {
+    public PageResponse<TaskResponse> search(Status status, Priority priority, String search, Pageable pageable) {
         Specification<Task> spec = buildSpecification(status, priority, search);
-        return repository.findAll(spec, Sort.by(Sort.Direction.DESC, "createdAt"))
-                .stream()
-                .map(TaskResponse::from)
-                .toList();
+        Page<TaskResponse> page = repository.findAll(spec, pageable)
+                .map(TaskResponse::from);
+        return PageResponse.from(page);
     }
 
     @Transactional(readOnly = true)
@@ -92,4 +93,4 @@ public class TaskService {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
-}
+}

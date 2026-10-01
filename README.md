@@ -346,6 +346,15 @@ server.port=8080
 
 Toutes les requêtes et réponses sont au format **JSON** (`Content-Type: application/json`).
 
+### 📚 Swagger UI / OpenAPI
+
+L'API dispose d'une documentation interactive générée automatiquement avec **springdoc-openapi**.
+
+Une fois le backend démarré, ouvrez votre navigateur sur :  
+👉 **http://localhost:8080/swagger-ui.html**
+
+Vous pourrez y consulter tous les endpoints, leurs paramètres, les schémas de données, et même tester l'API directement depuis l'interface (bouton *Try it out*). Le fichier OpenAPI complet (JSON) est accessible sur `http://localhost:8080/v3/api-docs`.
+
 ### Liste des endpoints
 
 | Méthode | URL | Description | Succès |
@@ -554,9 +563,7 @@ cd backend
 ./mvnw test
 ```
 
-Pour l'instant, le projet contient le test de chargement du contexte Spring généré par Spring Initializr. Les tests unitaires du service et du contrôleur seront décrits ici une fois ajoutés.
-
-Outils prévus : **JUnit 5**, **Mockito** (tests unitaires du service) et **MockMvc** (tests du contrôleur), fournis par `spring-boot-starter-webmvc-test`.
+Le projet utilise **JUnit 5** et **Mockito** pour tester le `TaskService`. Les méthodes CRUD, les filtres et la gestion des exceptions (`TaskNotFoundException`) sont couvertes par des tests unitaires isolés (sans base de données).
 
 ---
 
@@ -648,7 +655,6 @@ Pour repartir d'une base propre : `docker compose down -v` puis `docker compose 
 
 - **Pagination** et **tri** configurable des tâches (`Pageable`)
 - **Authentification** (Spring Security, JWT) et tâches par utilisateur
-- **Documentation OpenAPI / Swagger** de l'API
 - **Tests d'intégration** avec Testcontainers (vraie base PostgreSQL pendant les tests)
 - **Dockerisation complète** (backend et frontend) avec un seul `docker compose up`
 - **Profils Spring** (`dev`, `prod`) et secrets via variables d'environnement plutôt qu'en clair
@@ -660,13 +666,42 @@ Pour repartir d'une base propre : `docker compose down -v` puis `docker compose 
 
 ## 15. Frontend Angular
 
-<!-- À COMPLÉTER après la réalisation du frontend : version d'Angular et de Node, installation, lancement, tests, captures d'écran -->
+L'application frontend est développée en Angular (version 19+) et consomme l'API REST décrite ci-dessus.
 
-Le frontend se trouve dans le dossier `frontend/`. Il consomme l'API décrite ci-dessus (`http://localhost:8080/api/tasks`).
+### Prérequis
 
-Cette section sera complétée avec : les prérequis (Node.js, Angular CLI), les commandes d'installation (`npm install`) et de lancement (`ng serve`, accessible sur `http://localhost:4200`), les tests (`ng test`) et la structure des composants.
+- **Node.js** (version 20 ou supérieure recommandée)
+- **npm** (inclus avec Node.js)
+- *Angular CLI est optionnel car géré par npm, mais recommandé pour le développement (`npm install -g @angular/cli`).*
 
----
+### Installation et lancement
+
+1. Allez dans le dossier du frontend :
+   ```bash
+   cd frontend
+   ```
+2. Installez les dépendances :
+   ```bash
+   npm install
+   ```
+3. Démarrez l'application (le backend doit être lancé au préalable) :
+   ```bash
+   npm start
+   ```
+4. Ouvrez votre navigateur sur **http://localhost:4200**.
+
+### Tests
+
+Pour exécuter les tests unitaires Angular :
+```bash
+npm run test
+```
+
+### Fonctionnalités implémentées
+- Affichage de la liste des tâches avec filtres (recherche, statut, priorité).
+- Design responsive (ordinateur et mobile) avec Material Design et CSS personnalisé.
+- Création, modification et suppression de tâches via des fenêtres modales.
+- Changement rapide de statut depuis un menu déroulant sur chaque carte.
 
 ## 16. Auteur
 

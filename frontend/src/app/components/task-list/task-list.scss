@@ -6,14 +6,20 @@
     padding: 16px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 24px;
 
     mat-form-field {
         flex: 1 1 160px;
+        --mdc-filled-text-field-container-shape: 16px 16px 0 0;
     }
 
     .search {
         flex: 2 1 260px;
+    }
+
+    button {
+        --mdc-shape-small: 20px;
+        border-radius: 20px;
     }
 }
 
@@ -30,7 +36,7 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 16px;
 }
 
@@ -281,3 +287,115 @@
     color: var(--danger);
     --mat-button-text-label-text-color: var(--danger);
 }
+
+// ── Sort bar ─────────────────────────────────────────────────
+.sort-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0 4px;
+
+    &__label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin-right: 4px;
+    }
+}
+
+.sort-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+    &__icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        opacity: 0.6;
+    }
+
+    &:hover {
+        background: var(--surface-2);
+        color: var(--text);
+    }
+
+    &--active {
+        background: var(--primary-soft);
+        border-color: var(--border-strong);
+        color: var(--primary);
+
+        .sort-btn__icon {
+            opacity: 1;
+        }
+    }
+}
+
+// ── Count ────────────────────────────────────────────────────
+.count {
+    margin: 20px 0 12px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+
+    &__page {
+        font-size: 0.78rem;
+        opacity: 0.7;
+    }
+}
+
+// ── Pagination ───────────────────────────────────────────────
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+
+    &__btn {
+        color: var(--text-muted);
+    }
+
+    &__page {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 6px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+        &:hover {
+            background: var(--surface-2);
+            color: var(--text);
+        }
+
+        &--active {
+            background: var(--primary-soft);
+            border-color: var(--border-strong);
+            color: var(--primary);
+            font-weight: 600;
+        }
+    }
+
+    &__size {
+        width: 90px;
+        margin-left: 12px;
+        --mdc-filled-text-field-container-shape: 10px 10px 0 0;
+    }
+}
