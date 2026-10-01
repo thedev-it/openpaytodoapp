@@ -1,4 +1,7 @@
 package thedev.it.todo_app.entity;
 
-public enum Priority { }
-
+public enum Priority {
+    LOW,
+    MEDIUM,
+    HIGH
+}
