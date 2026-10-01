@@ -1,4 +1,8 @@
 <section class="task-list">
+  <div class="toolbar">
+    <h2>Mes tâches</h2>
+    <button mat-flat-button type="button" (click)="openCreate()">Nouvelle tâche</button>
+  </div>
   <form class="filters" [formGroup]="filters">
     <mat-form-field appearance="outline" class="search" subscriptSizing="dynamic">
       <mat-label>Rechercher par titre</mat-label>
@@ -68,6 +72,7 @@
 
           <footer class="task-card__footer">
             <time>{{ task.createdAt | date: 'dd/MM/yyyy' }}</time>
+            <button mat-button type="button" (click)="openEdit(task)">Modifier</button>
           </footer>
         </article>
       }

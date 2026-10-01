@@ -4,11 +4,12 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   BehaviorSubject,
   catchError,
@@ -28,6 +29,7 @@ import {
   TaskFilters,
 } from '../../models/task.model';
 import { TaskApi } from '../../services/task-api';
+import { TaskFormDialog } from '../task-form-dialog/task-form-dialog';
 
 @Component({
   selector: 'app-task-list',
@@ -35,7 +37,6 @@ import { TaskApi } from '../../services/task-api';
     DatePipe,
     ReactiveFormsModule,
     MatButtonModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatProgressBarModule,
@@ -46,6 +47,8 @@ import { TaskApi } from '../../services/task-api';
 })
 export class TaskList {
   private readonly api = inject(TaskApi);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly reload$ = new BehaviorSubject<void>(undefined);
 
   readonly statusOptions = STATUS_OPTIONS;
@@ -94,12 +97,36 @@ export class TaskList {
     this.filters.reset();
   }
 
+  openCreate(): void {
+    this.openForm(null);
+  }
+
+  openEdit(task: Task): void {
+    this.openForm(task);
+  }
+
   statusLabel(status: Status): string {
     return this.statusOptions.find((option) => option.value === status)?.label ?? status;
   }
 
   priorityLabel(priority: Priority): string {
     return this.priorityOptions.find((option) => option.value === priority)?.label ?? priority;
+  }
+
+  private openForm(task: Task | null): void {
+    this.dialog
+      .open<TaskFormDialog, Task | null, Task>(TaskFormDialog, {
+        data: task,
+        width: '520px',
+        maxWidth: '95vw',
+      })
+      .afterClosed()
+      .subscribe((saved) => {
+        if (saved) {
+          this.snackBar.open(task ? 'Tâche modifiée' : 'Tâche créée', 'OK', { duration: 3000 });
+          this.reload();
+        }
+      });
   }
 
   private toMessage(error: HttpErrorResponse): string {

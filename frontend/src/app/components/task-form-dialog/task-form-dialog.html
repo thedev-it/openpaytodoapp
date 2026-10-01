@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Modifier la tâche' : 'Nouvelle tâche' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Titre</mat-label>
+      <input matInput formControlName="title" maxlength="200" autocomplete="off" />
+      <mat-hint align="end">{{ form.controls.title.value.length }}/150</mat-hint>
+      <mat-error>{{ errorOf('title') }}</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description (facultative)</mat-label>
+      <textarea matInput formControlName="description" rows="4"></textarea>
+      <mat-hint align="end">{{ form.controls.description.value.length }}/1000</mat-hint>
+      <mat-error>{{ errorOf('description') }}</mat-error>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Statut</mat-label>
+        <mat-select formControlName="status">
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Priorité</mat-label>
+        <mat-select formControlName="priority">
+          @for (option of priorityOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (errorMessage(); as message) {
+      <p class="form-error" role="alert">{{ message }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close [disabled]="saving()">Annuler</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">
+      {{ saving() ? 'Enregistrement...' : isEdit ? 'Enregistrer' : 'Créer' }}
+    </button>
+  </mat-dialog-actions>
+</form>
