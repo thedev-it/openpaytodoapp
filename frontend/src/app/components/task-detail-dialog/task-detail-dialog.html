@@ -1,0 +1,37 @@
+<h2 mat-dialog-title>Détails de la tâche</h2>
+
+<mat-dialog-content>
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  } @else if (errorMessage(); as message) {
+    <p class="error" role="alert">{{ message }}</p>
+  } @else if (task(); as t) {
+    <h3 class="title">{{ t.title }}</h3>
+
+    <div class="badges">
+      <span class="badge" [attr.data-status]="t.status">{{ statusLabel(t.status) }}</span>
+      <span class="priority" [attr.data-priority]="t.priority">
+        <span class="priority__dot"></span>Priorité {{ priorityLabel(t.priority).toLowerCase() }}
+      </span>
+    </div>
+
+    <dl class="fields">
+      <div>
+        <dt>Description</dt>
+        <dd>{{ t.description || 'Aucune description' }}</dd>
+      </div>
+      <div>
+        <dt>Créée le</dt>
+        <dd>{{ t.createdAt | date: 'dd/MM/yyyy, HH:mm' }}</dd>
+      </div>
+      
+    </dl>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Fermer</button>
+  @if (task()) {
+    <button mat-flat-button type="button" (click)="edit()">Modifier</button>
+  }
+</mat-dialog-actions>

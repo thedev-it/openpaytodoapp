@@ -1,0 +1,184 @@
+<section class="task-list">
+  <div class="toolbar">
+    <h2>Mes tâches</h2>
+    <button mat-flat-button type="button" (click)="openCreate()">Nouvelle tâche</button>
+  </div>
+
+  <form class="filters" [formGroup]="filters">
+    <mat-form-field appearance="fill" class="search" subscriptSizing="dynamic">
+      <mat-label>Rechercher par titre</mat-label>
+      <input matInput formControlName="search" placeholder="Ex : démo" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <mat-label>Statut</mat-label>
+      <mat-select formControlName="status">
+        <mat-option value="">Tous</mat-option>
+        @for (option of statusOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" subscriptSizing="dynamic">
+      <mat-label>Priorité</mat-label>
+      <mat-select formControlName="priority">
+        <mat-option value="">Toutes</mat-option>
+        @for (option of priorityOptions; track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button type="button" (click)="resetFilters()">Réinitialiser</button>
+  </form>
+
+  <!-- Barre de tri -->
+  <div class="sort-bar">
+    <span class="sort-bar__label">Trier par :</span>
+    @for (opt of sortOptions; track opt.value) {
+      <button
+        type="button"
+        class="sort-btn"
+        [class.sort-btn--active]="sortBy() === opt.value"
+        (click)="setSortBy(opt.value)"
+      >
+        {{ opt.label }}
+        <mat-icon class="sort-btn__icon">{{ sortIcon(opt.value) }}</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" class="loader" />
+  }
+
+  @if (errorMessage(); as message) {
+    <div class="state state--error" role="alert">
+      <p>{{ message }}</p>
+      <button mat-flat-button type="button" (click)="reload()">Réessayer</button>
+    </div>
+  } @else if (!loading() && tasks().length === 0) {
+    <div class="state state--empty">
+      <p>Aucune tâche à afficher.</p>
+    </div>
+  } @else if (!loading()) {
+    <p class="count">
+      {{ page()?.totalElements }} tâche{{ (page()?.totalElements ?? 0) > 1 ? 's' : '' }}
+      <span class="count__page">— page {{ (page()?.page ?? 0) + 1 }} / {{ page()?.totalPages }}</span>
+    </p>
+
+    <div class="grid">
+      @for (task of tasks(); track task.id; let i = $index) {
+        <article
+          class="task-card"
+          [attr.data-priority]="task.priority"
+          [style.animation-delay.ms]="i * 40"
+        >
+          <div class="task-card__top">
+            <button
+              type="button"
+              class="badge badge--button"
+              [attr.data-status]="task.status"
+              [matMenuTriggerFor]="statusMenu"
+              aria-label="Changer le statut"
+            >
+              {{ statusLabel(task.status) }}
+              <span class="badge__caret" aria-hidden="true">▾</span>
+            </button>
+
+            <mat-menu #statusMenu="matMenu">
+              @for (option of statusOptions; track option.value) {
+                <button
+                  mat-menu-item
+                  type="button"
+                  [disabled]="option.value === task.status"
+                  (click)="changeStatus(task, option.value)"
+                >
+                  {{ option.label }}
+                </button>
+              }
+            </mat-menu>
+
+            <span class="priority" [attr.data-priority]="task.priority">
+              <span class="priority__dot"></span>{{ priorityLabel(task.priority) }}
+            </span>
+          </div>
+
+          <h3 class="task-card__title">
+            <button type="button" class="task-card__link" (click)="openDetail(task)">
+              {{ task.title }}
+            </button>
+          </h3>
+
+          @if (task.description) {
+            <p class="task-card__description">{{ task.description }}</p>
+          }
+
+          <footer class="task-card__footer">
+            <time>{{ task.createdAt | date: 'dd/MM/yyyy' }}</time>
+            <div class="task-card__actions">
+              <button mat-button type="button" class="action" (click)="openEdit(task)">
+                Modifier
+              </button>
+              <button
+                mat-button
+                type="button"
+                class="action action--danger"
+                (click)="openDelete(task)"
+              >
+                Supprimer
+              </button>
+            </div>
+          </footer>
+        </article>
+      }
+    </div>
+
+    <!-- Pagination -->
+    <nav class="pagination" aria-label="Navigation entre les pages">
+      <button
+        mat-icon-button
+        type="button"
+        class="pagination__btn"
+        [disabled]="page()?.first"
+        (click)="prevPage()"
+        matTooltip="Page précédente"
+      >
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+
+      @for (p of pages(); track p) {
+        <button
+          type="button"
+          class="pagination__page"
+          [class.pagination__page--active]="p === currentPage()"
+          (click)="goTo(p)"
+        >
+          {{ p + 1 }}
+        </button>
+      }
+
+      <button
+        mat-icon-button
+        type="button"
+        class="pagination__btn"
+        [disabled]="page()?.last"
+        (click)="nextPage()"
+        matTooltip="Page suivante"
+      >
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <mat-form-field appearance="fill" subscriptSizing="dynamic" class="pagination__size">
+        <mat-label>Par page</mat-label>
+        <mat-select [value]="pageSize()" (selectionChange)="setPageSize($event.value)">
+          @for (s of [5, 10, 20, 50]; track s) {
+            <mat-option [value]="s">{{ s }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </nav>
+  }
+
+</section>

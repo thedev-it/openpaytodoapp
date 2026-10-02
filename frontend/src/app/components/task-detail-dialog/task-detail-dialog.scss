@@ -1,0 +1,43 @@
+.title {
+    margin: 0 0 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.fields {
+    display: grid;
+    gap: 16px;
+    margin: 0;
+
+    dt {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+    }
+
+    dd {
+        margin: 4px 0 0;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+        line-height: 1.55;
+    }
+}
+
+.error {
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: #fecaca;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+}

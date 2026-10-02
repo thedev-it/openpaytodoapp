@@ -1,0 +1,98 @@
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$violet-palette,
+    ),
+    typography: Inter,
+    density: 0,
+  ));
+  color-scheme: dark;
+}
+
+:root {
+  --bg: #0a0a12;
+  --surface: #13131f;
+  --surface-2: #1a1a2b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(139, 124, 255, 0.45);
+  --text: #ecebf7;
+  --text-muted: #9a9ab5;
+  --primary: #7c6cf6;
+  --primary-soft: rgba(124, 108, 246, 0.16);
+  --danger: #f87171;
+  --warning: #fb923c;
+  --radius: 16px;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(900px 420px at 50% -120px, rgba(124, 108, 246, 0.22), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+
+  &[data-status='TODO'] {
+    color: #a5b4fc;
+    background: rgba(129, 140, 248, 0.15);
+  }
+
+  &[data-status='IN_PROGRESS'] {
+    color: #fcd34d;
+    background: rgba(251, 191, 36, 0.15);
+  }
+
+  &[data-status='DONE'] {
+    color: #6ee7b7;
+    background: rgba(52, 211, 153, 0.15);
+  }
+}
+
+.priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  &[data-priority='HIGH'] .priority__dot {
+    background: var(--danger);
+  }
+
+  &[data-priority='MEDIUM'] .priority__dot {
+    background: var(--warning);
+  }
+}
