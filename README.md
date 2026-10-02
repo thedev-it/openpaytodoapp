@@ -346,7 +346,7 @@ server.port=8080
 
 Toutes les requêtes et réponses sont au format **JSON** (`Content-Type: application/json`).
 
-### 📚 Swagger UI / OpenAPI
+###  Swagger UI / OpenAPI
 
 L'API dispose d'une documentation interactive générée automatiquement avec **springdoc-openapi**.
 
@@ -653,14 +653,12 @@ Pour repartir d'une base propre : `docker compose down -v` puis `docker compose 
 
 ## 14. Améliorations possibles
 
-- **Pagination** et **tri** configurable des tâches (`Pageable`)
+
 - **Authentification** (Spring Security, JWT) et tâches par utilisateur
-- **Tests d'intégration** avec Testcontainers (vraie base PostgreSQL pendant les tests)
 - **Dockerisation complète** (backend et frontend) avec un seul `docker compose up`
 - **Profils Spring** (`dev`, `prod`) et secrets via variables d'environnement plutôt qu'en clair
 - Échappement des caractères spéciaux (`%`, `_`) dans la recherche par titre
 - **CI/CD** (GitHub Actions : build et tests à chaque commit)
-- Journalisation structurée et monitoring (Spring Boot Actuator)
 
 ---
 
